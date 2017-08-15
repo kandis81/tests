@@ -1,0 +1,8 @@
+/home/johnny/work/CX_Log/bin/Debug/netcoreapp1.0/CX_Log.deps.json
+/home/johnny/work/CX_Log/bin/Debug/netcoreapp1.0/CX_Log.runtimeconfig.json
+/home/johnny/work/CX_Log/bin/Debug/netcoreapp1.0/CX_Log.runtimeconfig.dev.json
+/home/johnny/work/CX_Log/bin/Debug/netcoreapp1.0/CX_Log.dll
+/home/johnny/work/CX_Log/bin/Debug/netcoreapp1.0/CX_Log.pdb
+/home/johnny/work/CX_Log/obj/Debug/netcoreapp1.0/CX_Log.AssemblyInfo.cs
+/home/johnny/work/CX_Log/obj/Debug/netcoreapp1.0/CX_Log.dll
+/home/johnny/work/CX_Log/obj/Debug/netcoreapp1.0/CX_Log.pdb
