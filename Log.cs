@@ -89,7 +89,7 @@ namespace Log
 
       private void openFile()
       {
-         string filename = Path + "/app.log";
+         string filename = Path + "/log.txt";
          FileLength= 0;
 
          Global.Logger.write(Eloquences.eloDebug, "App Log : " + filename);
@@ -105,7 +105,7 @@ namespace Log
 
       public void initialize(string path, long maxFileSize)
       {
-         Regex apprx = new Regex("app\\.([0-9]*)\\.log");
+         Regex apprx = new Regex("log\\.([0-9]*)\\.txt");
 
          // Check is it a directory
          if (Directory.Exists(path) == false)
@@ -114,7 +114,7 @@ namespace Log
          Path = path;
          MaxFileSize = maxFileSize;
 
-         string[] files = Directory.GetFiles(path, "app.*.log");
+         string[] files = Directory.GetFiles(path, "log.*.txt");
 
          // try to find the last counter
          foreach (string file in files)
@@ -148,7 +148,7 @@ namespace Log
 
             sw.Flush();
 // Notice : is it possible, that the compiler says, it is not available???            sw.Close();
-            File.Move(Path + "/app.log", Path + "/app." + Counter.ToString() + ".log");
+            File.Move(Path + "/log.txt", Path + "/log." + Counter.ToString() + ".txt");
             Counter++;
             openFile();
          }
@@ -266,7 +266,7 @@ namespace Log
          System.DateTime curDt = System.DateTime.Now;
          System.Globalization.CultureInfo cult = new System.Globalization.CultureInfo("hu-HU");
 
-         string logText = curDt.ToString(cult) + " " + edata[(int) elo].Prefix + " : ";
+         string logText = curDt.ToString(cult) + " [" + edata[(int) elo].Prefix + "] ";
          if (this.prefix != null) logText += "(" + this.prefix + ") ";
          logText += msg;
 
