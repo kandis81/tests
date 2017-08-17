@@ -4,29 +4,45 @@ using System.Text.RegularExpressions;
 
 namespace Log
 {
+   class Global
+   {
+      // *******************************************
+      // private logger for low level logging
+      // Technically for log to console at the
+      // messages of logger class
+      // *******************************************
+
+      private static Client deepLog = new Client("GLOBAL");
+
+      public static Client Logger { get { return deepLog; } }
+   };
+
    // *******************************************
    // Enumerations to identificate log levels
    // type of interfaces
    // *******************************************
 
-   enum Interfaces { ifConsole, ifStream, ifFile };
+   enum Devices    { devConsole, devStream, devFile };
    enum Eloquences { eloError = 0, eloInfo, eloDebug, eloAll };
 
    // *******************************************
-   // Output interfaces
-   // InterfaceBase    : basic for common call in 
+   // Output Devices
+   // Device        : basic for common call in 
    //                    Client class
-   // ConsoleInterface : write log to console
-   // FileInterface    : write log to file(s)
+   // ConsoleDevice : write log to console
+   // FileDevice    : write log to file(s)
    // *******************************************
 
-   interface InterfaceBase
+   interface Device
    {
+      bool isDevice(Devices i);
       void write(ConsoleColor color, string text);
    };
 
-   class ConsoleInterface : InterfaceBase
+   class ConsoleDevice : Device
    {
+      public bool isDevice(Devices i) { return i == Devices.devConsole; }
+
       public void write(ConsoleColor color, string text)
       {
          System.Console.ForegroundColor = color;
@@ -35,13 +51,15 @@ namespace Log
       }
    };
 
-   class StreamInterface : InterfaceBase
+   class StreamDevice : Device
    {
       protected StreamWriter sw;
 
-      public StreamInterface() { sw = null; }
-      public void inititalize(Stream stream) { sw = new StreamWriter(stream); }
-      public void write(ConsoleColor color, string text) { writeStream(color, text); }
+      public StreamDevice() { sw = null; }
+      public void initialize(Stream stream) { sw = new StreamWriter(stream); }
+      public virtual void write(ConsoleColor color, string text) { writeStream(color, text); }
+
+      public virtual bool isDevice(Devices i) { return i == Devices.devStream; }
 
       public void writeStream(ConsoleColor color, string text)
       {
@@ -49,17 +67,18 @@ namespace Log
             throw new Exception("Stream is not initialized - Ignored message: " + text);
 
          sw.WriteLine(text);
+         sw.Flush();
       }
    };
 
-   class FileInterface : StreamInterface
+   class FileDevice : StreamDevice
    {
       private int Counter;
       private string Path;
       private long FileLength;
       private long MaxFileSize;
 
-      public FileInterface()
+      public FileDevice()
       {
          Counter= 0;
          Path = null;
@@ -72,6 +91,8 @@ namespace Log
       {
          string filename = Path + "/app.log";
          FileLength= 0;
+
+         Global.Logger.write(Eloquences.eloDebug, "App Log : " + filename);
 
          if (File.Exists(filename))
          {
@@ -103,23 +124,32 @@ namespace Log
             if (matches.Success == false)
                continue;
 
-            if (Counter < Int32.Parse(matches.Groups[1].Value))
+            if (Counter > Int32.Parse(matches.Groups[1].Value))
                continue;
 
-            Counter = Int32.Parse(matches.Groups[1].Value);
+            Counter = Int32.Parse(matches.Groups[1].Value) + 1;
          }
 
          openFile();
+
+         Global.Logger.write(Eloquences.eloDebug, "File inited : " + Counter.ToString() + "/" + path);
       }
 
-      public void write(ConsoleColor color, string text)
+      public override bool isDevice(Devices i) { return i == Devices.devFile; }
+
+      public override void write(ConsoleColor color, string text)
       {
          // Note: the -1 & +1 things are talking about the size of termination byte
          if (FileLength > 0 && text.Length + FileLength + 1 > MaxFileSize)
          {
+            Global.Logger.write(Eloquences.eloDebug, "File Length : " + FileLength.ToString() +
+                                                     ",Text Length : " + text.Length.ToString() +
+                                                     ",Max File Size : " + MaxFileSize.ToString());
+
             sw.Flush();
 // Notice : is it possible, that the compiler says, it is not available???            sw.Close();
             File.Move(Path + "/app.log", Path + "/app." + Counter.ToString() + ".log");
+            Counter++;
             openFile();
          }
 
@@ -146,25 +176,60 @@ namespace Log
 
       // private configuration
       private int MaxLineLength;
-      private Interfaces iface;
+      private Devices devType;
       private Eloquences logLevel;
       private string filePath;
-      private InterfaceBase device;
+      private Device device;
+      private Stream stream;
+      private string prefix;
 
       // Constructor to set default configuration
-      public Client()
+      public Client(string prefix= null)
       {
-         MaxLineLength = 1000;
-         iface         = Interfaces.ifConsole;
-         logLevel      = Eloquences.eloAll;
-         filePath      = null;
-         device        = new ConsoleInterface();
+         this.MaxLineLength = 1000;
+         this.devType       = Devices.devConsole;
+         this.logLevel      = Eloquences.eloAll;
+         this.filePath      = null;
+         this.device        = new ConsoleDevice();
+         this.stream        = null;
+         this.prefix        = prefix;
       }
 
       public void setMaxLineLength(int l) { this.MaxLineLength= l; }
-      public void setTypeOfInterface(Interfaces i) { this.iface= i; }
+      public void setTypeOfDevice(Devices i) { this.devType= i; }
       public void setLogLevel(Eloquences l) { this.logLevel= l; }
-      public void setFilePath(string p) { this.filePath= p; }
+      public void setFilePath(string p) { this.filePath= p; setTypeOfDevice(Devices.devFile); openDevice(); }
+      public void setStream(Stream s) { this.stream= s; setTypeOfDevice(Devices.devStream); openDevice(); }
+
+      private void openDevice()
+      {
+         if (device != null && device.isDevice(this.devType))
+            return ;
+
+         switch (this.devType)
+         {
+            case Devices.devStream :
+               {
+                  StreamDevice dev = new StreamDevice();
+                  device = dev;
+                  dev.initialize(stream);
+               }
+               break;
+
+            case Devices.devFile :
+               {
+                  FileDevice dev = new FileDevice();
+                  device = dev;
+                  dev.initialize(this.filePath, 5 * 1024);
+               }
+               break;
+
+            case Devices.devConsole :
+            default:
+               device = new ConsoleDevice();
+               break;
+         }
+      }
 
       // *** Configuration End ******************
 
@@ -184,8 +249,8 @@ namespace Log
 
       static private readonly EloData[] edata = new EloData[] {
          new EloData ("ERROR", ConsoleColor.Red),
-         new EloData ("INFO", ConsoleColor.Gray),
-         new EloData ("DEBUG", ConsoleColor.Green)
+         new EloData ("INFO", ConsoleColor.Green),
+         new EloData ("DEBUG", ConsoleColor.Gray)
       };
 
       // *** Log Level End **********************
@@ -201,40 +266,19 @@ namespace Log
          System.DateTime curDt = System.DateTime.Now;
          System.Globalization.CultureInfo cult = new System.Globalization.CultureInfo("hu-HU");
 
-         string logText = curDt.ToString(cult) + " " + edata[(int) elo].Prefix + " : " + msg;
+         string logText = curDt.ToString(cult) + " " + edata[(int) elo].Prefix + " : ";
+         if (this.prefix != null) logText += "(" + this.prefix + ") ";
+         logText += msg;
 
          if (device == null)
-            device = new ConsoleInterface();
+            device = new ConsoleDevice();
 
          device.write(edata[(int) elo].Color, logText);
-
-//         switch (iface)
-//         {
-//            case Interfaces.ifStream:
-//               writeToConsole(edata[(int) elo].Color, "--Stream-- " + logText);
-//               break;
-//
-//            case Interfaces.ifFile:
-//               writeToConsole(edata[(int) elo].Color, "--Stream-- " + logText);
-//               break;
-//
-//            case Interfaces.ifConsole:
-//            default:
-//               writeToConsole(edata[(int) elo].Color, logText);
-//               break;
-//         }
 
          if (logText.Length > this.MaxLineLength)
             // TODO: not the right exception :(
             throw new System.ArgumentOutOfRangeException(logText, "Text of log is longer like " + this.MaxLineLength.ToString() + " characters!");
       }
-
-//      private void writeToConsole(ConsoleColor color, string text)
-//      {
-//         System.Console.ForegroundColor = color;
-//         System.Console.WriteLine(text);
-//         System.Console.ResetColor();
-//      }
 
       // *** Logging End ************************
    }

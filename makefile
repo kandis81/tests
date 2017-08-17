@@ -48,5 +48,6 @@ build:
 # test run
 
 test: build
+	mkdir ./logs
 	cat tester.txt |  dotnet run --log-type console --log-level 3 --log-path ./logs
 # *************************************************

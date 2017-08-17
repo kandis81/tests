@@ -5,7 +5,7 @@ using Log;
 // C/C++ : typedef
 using LogClient = Log.Client;
 using LogEloquence = Log.Eloquences;
-using LogInterface = Log.Interfaces;
+using LogDevice    = Log.Devices;
 
 class Program
 {
@@ -35,15 +35,17 @@ class Program
    {
       if (idx >= args.Length)
          throw new ArgumentException(args[idx - 1] + " - Missing argument value");
+
+      log.write(LogEloquence.eloDebug, "Value : " + args[idx]);
    }
 
    private static void evalArguments(string[] args)
    {
-//      log.write(LogEloquence.eloDebug, "Count of parameters : " + args.Length.ToString());
+      log.write(LogEloquence.eloDebug, "Count of parameters : " + args.Length.ToString());
 
       for (int idx= 0; idx < args.Length; idx++)
       {
-//         log.write(LogEloquence.eloDebug, "Parameter : " + args[idx]);
+         log.write(LogEloquence.eloDebug, "Parameter : " + args[idx]);
 
          switch (args[idx])
          {
@@ -52,9 +54,9 @@ class Program
 
                switch (args[idx])
                {
-                  case "console" : log.setTypeOfInterface(LogInterface.ifConsole); break;
-                  case "stream"  : log.setTypeOfInterface(LogInterface.ifStream);  break;
-                  case "file"    : log.setTypeOfInterface(LogInterface.ifFile);    break;
+                  case "console" : log.setTypeOfDevice(LogDevice.devConsole); break;
+                  case "stream"  : log.setTypeOfDevice(LogDevice.devStream);  break;
+                  case "file"    : log.setTypeOfDevice(LogDevice.devFile);    break;
 
                   default:
                      throw new ArgumentException(args[idx] + " - Unknown log type");
