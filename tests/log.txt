@@ -1,0 +1,9 @@
+2017. 08. 20. 12:13:37,39 [INFO] Info message should be green
+2017. 08. 20. 12:13:37,39 [ERROR] Error message should be red
+2017. 08. 20. 12:13:37,39 [DEBUG] Debug message should be gray
+2017. 08. 20. 14:08:14,851 [INFO] Info message should be green
+2017. 08. 20. 14:08:14,851 [ERROR] Error message should be red
+2017. 08. 20. 14:08:14,851 [DEBUG] Debug message should be gray
+2017. 08. 20. 14:21:40,912 [INFO] Info message should be green
+2017. 08. 20. 14:21:40,912 [ERROR] Error message should be red
+2017. 08. 20. 14:21:40,912 [DEBUG] Debug message should be gray

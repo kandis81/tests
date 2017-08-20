@@ -1,53 +1,16 @@
 
-# *************************************************
-# all : compile & run
-
 all:
-	$(MAKE) update
-	$(MAKE) build
+	@(echo Makeing library ...)
+	@(cd lib ; $(MAKE) $@; cd -)
+	@(echo Makeing unit tester ...)
+	@(cd tests ; $(MAKE) $@; cd -)
+	@(echo Makeing old fashion way tester ...)
+	@(cd Program ; $(MAKE) $@; cd -)
 
-# *************************************************
-
-# *************************************************
-# run source
-
-run:
-	dotnet run $*
-
-# *************************************************
-
-# *************************************************
-# create basic console project
-# basicly it is removed, due to not used anymore
-# in this directory
-
-#create:
-#	dotnet new -l C# -t Console
-
-# *************************************************
-
-# *************************************************
-# Restore : download missing dependencies
-# Use it when you added any new usages (Libs) to it
-
-update:
-	dotnet restore
-
-# *************************************************
-
-# *************************************************
-# Compile source
-
-build:
-	dotnet build
-
-# *************************************************
-
-
-# *************************************************
-# test run
-
-test: build
-	mkdir ./logs
-	cat tester.txt |  dotnet run --log-type console --log-level 3 --log-path ./logs
-# *************************************************
+clean:
+	@(echo Cleaning library ...)
+	@(cd lib ; $(MAKE) $@; cd -)
+	@(echo Cleaning unit tester ...)
+	@(cd tests ; $(MAKE) $@; cd -)
+	@(echo Cleaning old fashion way tester ...)
+	@(cd Program ; $(MAKE) $@; cd -)
