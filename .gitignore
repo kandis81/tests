@@ -2,3 +2,4 @@ logs
 obj
 bin
 *.swp
+tests/log.txt

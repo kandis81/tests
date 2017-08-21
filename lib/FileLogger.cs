@@ -6,12 +6,12 @@ namespace Log
 {
    public class FileLogger : StreamLogger
    {
-      private readonly string fname = "log";
-      private readonly string extension = "txt";
+      private static readonly string fname = "log";
+      private static readonly string extension = "txt";
       private long counter = 0;
       private long maxfilesize = 5 * 1024;
       private long filelength = 0;
-      private readonly int terminationbyte = 1;
+      private static readonly int sizeofnewline = 1;
 
       protected string FilePath { get; set; }
       protected long Counter { get { return counter++; } }
@@ -74,7 +74,7 @@ namespace Log
       protected override void internal_write(Eloquences elo, string message)
       {
          string text= Serializer.serialize(elo, message, System.DateTime.Now);
-         long sizediff= maxfilesize - filelength - text.Length - terminationbyte;
+         long sizediff= maxfilesize - filelength - text.Length - sizeofnewline;
 
          if (sizediff < 0)
          {
@@ -84,16 +84,16 @@ namespace Log
             filelength = 0;
          }
 
-         if (text.Length + terminationbyte > MaxFileSize)
+         if (text.Length + sizeofnewline > MaxFileSize)
          {
-            writeStream(text.Substring(0, (int) MaxFileSize - terminationbyte));
+            writeStream(text.Substring(0, (int) MaxFileSize - sizeofnewline));
             filelength = MaxFileSize;
-            internal_write(elo, text.Substring((int) MaxFileSize - terminationbyte));
+            internal_write(elo, text.Substring((int) MaxFileSize - sizeofnewline));
          }
          else
          {
             writeStream(text);
-            filelength += text.Length + terminationbyte;
+            filelength += text.Length + sizeofnewline;
          }
       }
    }
