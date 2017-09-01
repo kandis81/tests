@@ -1,0 +1,3 @@
+Készíts egy webes alkalmazást, amibe Google vagy Facebook accounttal fel lehet iratkozni és utána belépni.
+Ha szükséged van tárhelyre, szerverre, bármi egyébre, akkor szívesen segítünk."
+Az alkalmazáson belül elég, ha egy köszönő szöveget, vagy valami olyan dolgot hagysz, ami feldobja a napunkat;)
