@@ -1,0 +1,27 @@
+body {
+   background-image : url(pictures/cloud.jpg);
+   background-size  : cover;
+}
+
+#img_hand {
+   position   : fixed;
+   width      : 50%;
+   height     : 20%;
+   left       : 0px;
+   bottom     : -100px;
+   visibility : hidden;
+}
+
+#img_sun {
+   position   : fixed;
+   width      : 10%;
+   height     : 10%;
+   left       : 0px;
+   bottom     : -50px;
+   visibility : hidden;
+}
+
+#p_w1 { visibility : hidden; }
+#p_w2 { visibility : hidden; }
+#p_w3 { visibility : hidden; }
+#p_w4 { visibility : hidden; }

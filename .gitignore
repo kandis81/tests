@@ -2,3 +2,4 @@
 *.swp
 backend/bin
 backend/obj
+frontend/logs
