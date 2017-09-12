@@ -18,6 +18,15 @@ namespace Docler
 
  First step, the LogLevel is just a sign to prefix of log
 
+ Note:
+
+ Normal car length logger is removed due to, the firs stdout write will
+ identificate the orientation of stream. So, if the orientation is
+ changed with fwide() or wide relevant call, then it will identificate
+ the 'stdout' stream to wide chars. After that, the normal printf will
+ not work till reopen of stream. So, I would like to hack it deeply at
+ first, so I ignored support of not wide string version.
+
  */
 
 enum LogLevel
@@ -34,7 +43,7 @@ class Logger
 {
    public:
 
-      static void write(LogLevel elo, const char* format, ...);
+//      static void write(LogLevel elo, const char* format, ...);
       static void wwrite(LogLevel elo, const wchar_t* format, ...);
 };
 

@@ -97,6 +97,22 @@ class Buffer
       }
       virtual void free() { ::free(buf); buf= 0; }
 
+      Buffer<T>& operator = (const Buffer<T>& b)
+      {
+         if (this != &b)
+         {
+            this->size(b.size());
+            this->clear();
+
+            if (b.len() > 0)
+               memcpy(this->get(), b.data(), b.len() * sizeof(T));
+
+            this->len(b.len());
+         }
+
+         return *this;
+      }
+
    private:
 
       T* buf;

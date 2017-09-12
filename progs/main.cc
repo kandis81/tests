@@ -1,24 +1,21 @@
 
-#include <iostream>
-#include <cstdio>
-#include <cwchar>
+#include <vigenereapp.hpp>
 
-#include <logger.hpp>
-#include <localescope.hpp>
-#include <buffer.hpp>
-
-using namespace std;
 using namespace Docler;
 
 int main(void)
 {
-   LocaleScope lscope("");
-   Buffer<char> cbuf(255 + 1);
-   Buffer<wchar_t> wbuf(255 + 1);
+   VigenereApp app;
 
-   fgetws(wbuf.get(), wbuf.size() - 1, stdin);
-
-   Logger::wwrite(INFO, L"Readed: %ls", wbuf.data());
+   try
+   {
+      app.run();
+   }
+   catch (std::exception& e)
+   {
+      Logger::wwrite(ERROR, L"%s", e.what());
+      return 1;
+   }
 
    return 0;
 }

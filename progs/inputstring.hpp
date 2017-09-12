@@ -1,4 +1,6 @@
 
+#include <buffer.hpp>
+
 #ifndef INPUTSTRING_CLASS
 #define INPUTSTRING_CLASS
 
@@ -27,10 +29,10 @@ class InputString
       InputString(size_t size) : original(), converted(size) {}
       virtual ~InputString() {}
 
-      virtual void set(const Buffer<wchar_t>& input);
+      virtual void set(const Buffer<wchar_t>& input, size_t fkeysize= 0);
 
       virtual const Buffer<wchar_t>& orig() const { return original; }
-      virtual const Buffer<wchar_t>& conv() const { return converted; }
+      virtual const Buffer<char>& conv() const { return converted; }
 
    protected:
 

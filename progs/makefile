@@ -5,15 +5,16 @@
 
 OBJDIR   = obj
 
-MK       = mkdir
+MK       = mkdir -p
 
 CPP      = g++
 CPPFLAGS = -c -Wall -ggdb
 INCLUDES = -I.
 
-SOURCES  = main.cc \
-           logger.cc \
-           inputstring.cc
+SOURCES  = main.cc        \
+           logger.cc      \
+           inputstring.cc \
+           vigenereapp.cc
 APPL     = $(addprefix $(OBJDIR)/, $(notdir $(SOURCES:.cc=.o)))
 
 BIN      = vigenere
@@ -27,7 +28,9 @@ all: $(BIN)
 clean: create
 	@(echo Cleaning $(BIN) ...)
 
-create:
+create: $(OBJDIR)
+
+$(OBJDIR):
 	@(echo Creating $(OBJDIR) ...)
 	@($(MK) $(OBJDIR))
 
