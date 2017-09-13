@@ -6,14 +6,17 @@
 OBJDIR   = obj
 
 MK       = mkdir -p
+RM       = rm -rf
 
 CPP      = g++
 CPPFLAGS = -c -Wall -ggdb
+LDFLAGS  = -ggdb
 INCLUDES = -I.
 
 SOURCES  = main.cc        \
            logger.cc      \
            inputstring.cc \
+           file.cc        \
            vigenereapp.cc
 APPL     = $(addprefix $(OBJDIR)/, $(notdir $(SOURCES:.cc=.o)))
 
@@ -27,6 +30,7 @@ all: $(BIN)
 
 clean: create
 	@(echo Cleaning $(BIN) ...)
+	@($(RM) $(OBJDIR)/*.*)
 
 create: $(OBJDIR)
 
@@ -36,7 +40,7 @@ $(OBJDIR):
 
 $(BIN): $(APPL)
 	@(echo Linking $(BIN) ...)
-	$(CPP) $(APPL) -o $(BIN)
+	$(CPP) $(LDFLAGS) $(APPL) -o $(BIN)
 
 define compile
 $(OBJDIR)/$(notdir $(1:.cc=.o)) : $1

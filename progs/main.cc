@@ -13,7 +13,7 @@ int main(void)
    }
    catch (std::exception& e)
    {
-      Logger::wwrite(ERROR, L"%s", e.what());
+      Logger::wwrite(ERROR, L"%s\n", e.what());
       return 1;
    }
 

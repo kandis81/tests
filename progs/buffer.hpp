@@ -119,6 +119,10 @@ class Buffer
       size_t bsize, blen;
 };
 
+typedef Buffer<wchar_t> WCBuffer;
+typedef Buffer<char>    CBuffer;
+typedef Buffer<void*>   VBuffer;
+
 }
 
 #endif

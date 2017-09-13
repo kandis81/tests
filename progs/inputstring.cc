@@ -57,6 +57,9 @@ void InputString::set(const Buffer<wchar_t>& input, size_t fkeysize)
    }
 
    converted.len(j);
+
+   if (j == 0)
+      throw std::invalid_argument("Input is empty!");
 }
 
 }
